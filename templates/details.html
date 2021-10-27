@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.rawgit.com/mervick/emojionearea/master/dist/emojionearea.min.css">
+    <link rel='stylesheet' href="{% static 'js/jquery-ui/jquery-ui.css' %}">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/92b110740b.js" crossorigin="anonymous"></script>
+    <script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
+    <script src="https://cdn.rawgit.com/mervick/emojionearea/master/dist/emojionearea.min.js"></script>
+    
+
+    <style>
+      .form-container{
+        background-color: white;
+        min-height:350px;
+        min-width:280px;
+        padding:20px;
+        border: solid 2px #e6e6e6;
+      }
+      body{
+        background-color: #eee;
+      }
+      
+      .btn{
+        margin-top: 10vh;
+      }
+      .main{
+        padding-top: 10vh;
+      }
+      
+    </style>
+</head>
+<body>
+    <a class="btn btn-danger btn-lg" href="{% url 'logout' %}" style="margin-left: 80%;">Logout</a>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="card m-b-30" style="margin-top: 50px;">
+                    <div class="card-body">
+
+                        <h4 class="mt-0 header-title">User Details</h4>
+                        {% if usrs %}
+                        <div class="table-responsive">
+                            <table id="datatable" class="table table-bordered" style="border-collapse: collapse; border-spacing: 0; width: 100%">
+                                <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Email ID</th>
+                                    <th>Address</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                </tr>
+                                </thead>
+                                <tbody id="myTable">
+                                
+                                {% for usr in usrs %}
+                                <tr>
+                                    <td>{{ usr.username }}</td>
+                                    <td>{{ usr.email }}</td>
+                                    <td>{{ usr.address }}</td>
+                                    <td><a class="edit btn btn-primary btn-sm" data-toggle="modal" data-target="#edit_details_{{ usr.id }}" onclick="editDetails({{usr.id}})" href="#">Edit</a></td>
+                                    <td>
+                                      <form action="{% url 'del' %}" method="POST">
+                                        {% csrf_token %}
+                                        <input type="text" name="user_id" value="{{ usr.id }}" hidden>
+                                        <input type="submit" class="btn btn-danger btn-sm" value="Delete" id="inline-username">
+                                      </form>
+                                    </td>
+                                </tr>
+
+                                <!-- Edit User Details Modal -->
+                                <div class="modal fade" id="edit_details_{{ usr.id }}" tabindex="-1" role="dialog" aria-labelledby="editpostmdLabel" aria-hidden="true">
+                                  <div class="modal-dialog" role="document">
+                                      <div class="modal-content">
+                                          <div class="modal-header">
+                                          <h5 class="modal-title" id="title_{{ usr.id }}">Edit User Details</h5>
+                                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                          </button>
+                                          </div>
+                                          <div class="modal-body">
+                                      <form action="{% url 'edit' %}" method="POST">
+                                        {% csrf_token %}
+                                                  <input type="text" name="user_id" value="{{ usr.id }}" hidden><br>
+                                                  Username  : <input type="text" name="username" value="{{ usr.username }}"><br><br>
+                                                  Email ID  : <input type="text" name="email" value="{{ usr.email }}"><br><br>
+                                                  Address  : <input type="text" name="address" value="{{ usr.address }}"><br><br>
+                                          </div>
+                                          <div class="modal-footer">
+                                              <button type="submit" class="btn btn-primary">Save</button>
+                                          </div>
+                                      </form>
+                                      </div>
+                                  </div>
+                                </div>
+                                {% endfor %}
+                                
+                                </tbody>
+                            </table>
+                        </div>
+                        {% endif %}
+                        
+                    </div>
+                </div>
+            </div> <!-- end col -->
+        </div> <!-- end row -->
+
+    </div>
+
+    
+
+    
+</body>
+</html>
